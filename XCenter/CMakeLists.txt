@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 2.6)
+PROJECT(XCenter)
+
+AUX_SOURCE_DIRECTORY(./ SRC_LIST)       # 把源文件放在 SRC_LIST 变量中
+#SET(EXECUTABLE_OUTPUT_PATH  ./)
+SET(LIBRARY_OUTPUT_PATH ${ZH_SERVER_PROJECT_SOURCE_DIR}/XCenter/_lib) 
+
+ADD_DEFINITIONS( -g -W -Wall -D_REENTRANT -D_FILE_OFFSET_BITS=64 -DAC_HAS_INFO
+-DAC_HAS_WARNING -DAC_HAS_ERROR -DAC_HAS_CRITICAL -DTIXML_USE_STL
+-DAC_HAS_DEBUG -DLINUX_DAEMON -std=c++11)
+
+INCLUDE_DIRECTORIES(
+    ./_include
+    /usr/include/
+    ${ZH_SERVER_PROJECT_SOURCE_DIR}/LXMysql/_include/
+)
+
+LINK_DIRECTORIES( 
+    /usr/lib/x86_64-linux-gnu/
+    ${ZH_SERVER_PROJECT_SOURCE_DIR}/LXMysql/_lib/
+)
+
+ADD_LIBRARY(${PROJECT_NAME} ${SRC_LIST})                    # 输出静态态库文件
+# ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC_LIST})           # + SHARED 输出动态库文件
+# ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST})
+
+target_link_libraries(${PROJECT_NAME}
+    libLXMysql.so
+    mysqlclient
+)
